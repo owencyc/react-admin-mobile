@@ -12,7 +12,7 @@ class Resume extends Component {
         
     }
     componentDidMount(){
-        document.title="编辑";
+        document.title="宋小秋的动手环节";
     }
     render() {
         
@@ -20,13 +20,13 @@ class Resume extends Component {
             <WingBlank>
                 <p>你想写些什么了^_^</p>
                 <WhiteSpace />
-                <Button type='primary' onClick={()=>{this.props.move('/resume-about')}}>概要</Button>
+                <Button type='primary' onClick={()=>{this.props.move('/resume-home')}}>概要</Button>
                 <WhiteSpace />
                 <Button type='primary' onClick={()=>{this.props.move('/resume-about')}}>简介</Button>
                 <WhiteSpace />
-                <Button type='primary' onClick={()=>{this.props.move('/resume-about')}}>技能</Button>
+                <Button type='primary' onClick={()=>{this.props.move('/resume-skill')}}>技能</Button>
                 <WhiteSpace />
-                <Button type='primary' onClick={()=>{this.props.move('/resume-about')}}>那些句子</Button>
+                <Button type='primary' onClick={()=>{this.props.move('/resume-verse')}}>那些句子</Button>
                 <WhiteSpace />
                 <WhiteSpace />
                 <Button onClick={()=>{window.open("http://www.pedalo.cn/autumn/"); }}>去看看效果~</Button>
@@ -36,9 +36,7 @@ class Resume extends Component {
 }
 
 const mapStateToProps = state => {
-    //console.log('main inject:');
-    console.log(state.reducer1);
-    return state.reducer1
+    return {}
   }
 
 const mapDispatchToProps = dispatch => ({

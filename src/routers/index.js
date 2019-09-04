@@ -4,6 +4,9 @@ import { Router, Route, Switch, Redirect } from 'react-router'
 import App from '../components/app/App'
 import test from '../demo/test/test'
 import About from '../components/resume/about'
+import Home from '../components/resume/home'
+import Skill from '../components/resume/skill'
+import Verse from '../components/resume/verse'
 import Resume from '../components/resume'
 
 const NotFound1 = () => (
@@ -26,7 +29,10 @@ export default class AppRouter extends Component {
                     <Route path="/" component={Resume} exact />
                     <Route path="/test" component={test} exact />
 
+                    <Route path="/resume-home" component={Home} exact />
                     <Route path="/resume-about" component={About} exact />
+                    <Route path="/resume-skill" component={Skill} exact />
+                    <Route path="/resume-verse" component={Verse} exact />
                     
 
                     <Route component={NotFound1} />
