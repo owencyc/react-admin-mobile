@@ -74,7 +74,7 @@ class Skill extends Component {
                 </SwipeAction>
           );
         return (
-            <div style={{width: '100%', height: '100%'}}>
+            <div style={{width: '100%', height: '100%',overflow:'hidden'}}>
                 <List renderHeader={() => '你想改啥呀~'}>
                     <InputItem
                         type='text'
@@ -101,6 +101,7 @@ class Skill extends Component {
                             console.log(this.state);
                             let tmp=[...this.state.skills,{name:this.state.name,score:this.state.score}]
                             this.setState({
+                                skills:tmp,
                                 dataSource: this.state.dataSource.cloneWithRows(tmp)
                             })
                             Toast.info('假装添加成功', 3, null, false);
@@ -114,7 +115,7 @@ class Skill extends Component {
                     <WhiteSpace />
                 </List>
                 <ListView
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%',height:'calc(100% - 280px)'}}
                   key='0'
                   ref={el => this.lv = el}
                   dataSource={this.state.dataSource}

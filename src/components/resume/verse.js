@@ -94,6 +94,7 @@ class Verse extends Component {
                         clear
                         data-seed="logId"
                         autoHeight
+                        rows={5}
                         value={this.state.words}
                         onChange={val=>{this.setState({words:val})}}
                         ref={el =>  this.txtWords=el}
@@ -104,6 +105,7 @@ class Verse extends Component {
                             console.log(this.state);
                             let tmp=[...this.state.verses,{author:this.state.author,words:this.state.words}]
                             this.setState({
+                                verses:tmp,
                                 dataSource: this.state.dataSource.cloneWithRows(tmp)
                             })
                             Toast.info('假装增加成功', 3, null, false);
@@ -117,7 +119,7 @@ class Verse extends Component {
                     <WhiteSpace />
                 </List>
                 <ListView
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%', height: 'calc(100% - 340px)' }}
                   key='0'
                   ref={el => this.lv = el}
                   dataSource={this.state.dataSource}
