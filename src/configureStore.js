@@ -4,7 +4,7 @@ import { routerMiddleware } from 'connected-react-router'
 import createRootReducer from './redux/reducers'
 import thunk from 'redux-thunk';
 
-export const history = createBrowserHistory()
+export const history = createBrowserHistory({ basename: '/admin-qiu' })
 
 export function configureStore(preloadedState) {
   const store = createStore(
