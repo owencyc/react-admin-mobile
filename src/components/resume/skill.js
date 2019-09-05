@@ -4,7 +4,7 @@ import { history } from '../../configureStore'
 import { Button,List,InputItem,Modal,WhiteSpace,WingBlank,Toast,ListView,Slider,SwipeAction,Card,PullToRefresh } from 'antd-mobile'
 import { push } from 'connected-react-router'
 import { testEvent } from '../../redux/actions'
-import { allComments } from '../../services'
+import { getData,post } from '../../services'
 
 const alert = Modal.alert;
 
@@ -18,18 +18,25 @@ class Skill extends Component {
         this.state={
             dataSource,
             skills,
-            work:'',
-            description:''
+            name:'',
+            score:90
         }
         
     }
     componentDidMount(){
         document.title="技能编辑";
-        //找历史记录
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.state.skills),
-            name:'二胡'
+        getData('/getData').then(res=>{
+          console.log(res);
+          if (res.skills && res.skills.length > 0) {
+            //找历史记录
+            //找历史记录
+            this.setState({
+              skills:res.skills,
+              dataSource: this.state.dataSource.cloneWithRows(res.skills)
+            })
+          }
         })
+
     }
     delData=(guid)=>{
         alert('警告', '要舍弃这项技能了吗', [
@@ -68,7 +75,7 @@ class Skill extends Component {
                       title='技能点'
                     />
                     <Card.Body>
-                      <div>{rowData.name}分数 {rowData.score}</div>
+                      <div>{rowData.fields.name}分数 {rowData.fields.score}</div>
                     </Card.Body>
                   </Card>
                 </SwipeAction>
@@ -78,7 +85,7 @@ class Skill extends Component {
                 <List renderHeader={() => '你想改啥呀~'}>
                     <InputItem
                         type='text'
-                        placeholder=""
+                        placeholder="想加啥技能呀~"
                         value={this.state.name}
                         onChange={val=>{this.setState({name:val})}}
                         ref={el =>  this.txtName=el}
@@ -99,12 +106,20 @@ class Skill extends Component {
                     <WingBlank>
                         <Button type="primary" onClick={() => {
                             console.log(this.state);
-                            let tmp=[...this.state.skills,{name:this.state.name,score:this.state.score}]
+                            let tmp=[...this.state.skills,{fields:{name:this.state.name,score:this.state.score}}]
                             this.setState({
                                 skills:tmp,
                                 dataSource: this.state.dataSource.cloneWithRows(tmp)
                             })
-                            Toast.info('假装添加成功', 3, null, false);
+                            post('/addSkill/',{
+                              name:this.state.name,
+                              score:this.state.score
+                          }).then(res=>{
+                              console.log(res)
+                              if(res.status===1){
+                                  Toast.info('添加成功', 3, null, false);
+                              }
+                          })
                         }}>增加</Button>
                         <WhiteSpace />
                         <Button onClick={() => {

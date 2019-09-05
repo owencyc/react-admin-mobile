@@ -4,7 +4,7 @@ import { history } from '../../configureStore'
 import { Button, List, InputItem, TextareaItem, WhiteSpace, WingBlank, Toast } from 'antd-mobile'
 import { push } from 'connected-react-router'
 import { testEvent } from '../../redux/actions'
-import { allComments } from '../../services'
+import { getData,post } from '../../services'
 
 class About extends Component {
     constructor(props) {
@@ -20,10 +20,18 @@ class About extends Component {
     }
     componentDidMount() {
         document.title = "简介编辑";
-
-        //找历史记录
-        this.setState({
-            name: '宋小秋'
+        getData('/getData').then(res=>{
+            console.log(res);
+            if(res.user&& res.user.length>0){
+                //找历史记录
+                this.setState({
+                    name:res.user[0].fields.name,
+                    talk:res.user[0].fields.p_word,
+                    city:res.user[0].fields.city,
+                    district:res.user[0].fields.state,
+                    street:res.user[0].fields.street
+                })
+            }
         })
     }
     render() {
@@ -78,7 +86,18 @@ class About extends Component {
                 <WingBlank>
                     <Button type="primary" onClick={() => {
                         console.log(this.state);
-                        Toast.info('假装修改成功', 3, null, false);
+                        post('/addIntro2/',{
+                            name:this.state.name,
+                            p_word:this.state.talk,
+                            city:this.state.city,
+                            state:this.state.district,
+                            street:this.state.street,
+                        }).then(res=>{
+                            console.log(res)
+                            if(res.status===1){
+                                Toast.info('修改成功', 3, null, false);
+                            }
+                        })
                     }}>提交</Button>
                     <WhiteSpace />
                     <Button onClick={() => {

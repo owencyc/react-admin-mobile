@@ -4,7 +4,7 @@ import { history } from '../../configureStore'
 import { Button,List,InputItem,TextareaItem,WhiteSpace,WingBlank,Toast,ListView,Modal,SwipeAction,Card,PullToRefresh } from 'antd-mobile'
 import { push } from 'connected-react-router'
 import { testEvent } from '../../redux/actions'
-import { allComments } from '../../services'
+import { getData,post } from '../../services'
 
 const alert = Modal.alert;
 
@@ -17,22 +17,29 @@ class Verse extends Component {
         let verses=[
             {
                 author:'陈小澄',
-                words:'心若向阳，无谓悲伤'
+                content:'心若向阳，无谓悲伤'
             }
         ]
         this.state={
             dataSource,
             verses,
             author:'',
-            words:''
+            content:''
         }
         
     }
     componentDidMount(){
         document.title="那些话儿";
-        //找历史记录
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.state.verses)
+        getData('/getData').then(res=>{
+          console.log(res);
+          if (res.verses && res.verses.length > 0) {
+            //找历史记录
+            //找历史记录
+            this.setState({
+              verses:res.verses,
+              dataSource: this.state.dataSource.cloneWithRows(res.verses)
+            })
+          }
         })
     }
     delData=(guid)=>{
@@ -69,9 +76,9 @@ class Verse extends Component {
               >
                   <Card full >
                     <Card.Body>
-                      <div>{rowData.words}</div>
+                      <div>{rowData.fields.content}</div>
                     </Card.Body>
-                    <Card.Footer extra={<div>{rowData.author}</div>} />
+                    <Card.Footer extra={<div>{rowData.fields.author}</div>} />
                   </Card>
                 </SwipeAction>
           );
@@ -80,7 +87,7 @@ class Verse extends Component {
                 <List renderHeader={() => '你想改啥呀~'}>
                 <InputItem
                         type='text'
-                        placeholder=""
+                        placeholder="谁说的呀~"
                         clear
                         value={this.state.author}
                         onChange={val=>{this.setState({author:val})}}
@@ -95,20 +102,28 @@ class Verse extends Component {
                         data-seed="logId"
                         autoHeight
                         rows={5}
-                        value={this.state.words}
-                        onChange={val=>{this.setState({words:val})}}
+                        value={this.state.content}
+                        onChange={val=>{this.setState({content:val})}}
                         ref={el =>  this.txtWords=el}
                     />
 
                     <WingBlank>
                         <Button type="primary" onClick={() => {
                             console.log(this.state);
-                            let tmp=[...this.state.verses,{author:this.state.author,words:this.state.words}]
+                            let tmp=[...this.state.verses,{fields:{author:this.state.author,content:this.state.content}}]
                             this.setState({
                                 verses:tmp,
                                 dataSource: this.state.dataSource.cloneWithRows(tmp)
                             })
-                            Toast.info('假装增加成功', 3, null, false);
+                            post('/addVerse/',{
+                              author:this.state.author,
+                              content:this.state.content
+                          }).then(res=>{
+                              console.log(res)
+                              if(res.status===1){
+                                  Toast.info('添加成功', 3, null, false);
+                              }
+                          })
                         }}>增加</Button>
                         <WhiteSpace />
                         <Button onClick={() => {

@@ -4,7 +4,7 @@ import { history } from '../../configureStore'
 import { Button,List,InputItem,TextareaItem,WhiteSpace,WingBlank,Toast } from 'antd-mobile'
 import { push } from 'connected-react-router'
 import { testEvent } from '../../redux/actions'
-import { allComments } from '../../services'
+import { getData,post } from '../../services'
 
 class Home extends Component {
     constructor(props){
@@ -17,11 +17,17 @@ class Home extends Component {
     }
     componentDidMount(){
         document.title="概要编辑";
-
-        //找历史记录
-        this.setState({
-            work:'音乐老师'
+        getData('/getData').then(res=>{
+            console.log(res);
+            if(res.user&& res.user.length>0){
+                //找历史记录
+                this.setState({
+                    work:res.user[0].fields.work,
+                    description:res.user[0].fields.word
+                })
+            }
         })
+        
     }
     render() {
         return (
@@ -51,7 +57,16 @@ class Home extends Component {
                     <WingBlank>
                         <Button type="primary" onClick={() => {
                             console.log(this.state);
-                            Toast.info('假装修改成功', 3, null, false);
+                            post('/addIntro/',{
+                                work:this.state.work,
+                                word:this.state.description
+                            }).then(res=>{
+                                console.log(res)
+                                if(res.status===1){
+                                    Toast.info('修改成功', 3, null, false);
+                                }
+                            })
+                            
                         }}>提交</Button>
                         <WhiteSpace />
                         <Button onClick={() => {
