@@ -111,6 +111,7 @@ class Verse extends Component {
                         <Button type="primary" onClick={() => {
                             console.log(this.state);
                             let tmp=[...this.state.verses,{fields:{author:this.state.author,content:this.state.content}}]
+                            console.log(tmp)
                             this.setState({
                                 verses:tmp,
                                 dataSource: this.state.dataSource.cloneWithRows(tmp)
