@@ -25,24 +25,35 @@ class Skill extends Component {
     }
     componentDidMount(){
         document.title="技能编辑";
-        getData('/getData').then(res=>{
-          console.log(res);
-          if (res.skills && res.skills.length > 0) {
-            //找历史记录
-            //找历史记录
-            this.setState({
-              skills:res.skills,
-              dataSource: this.state.dataSource.cloneWithRows(res.skills)
-            })
-          }
-        })
-
+        
+        this.initData();
     }
-    delData=(guid)=>{
+    initData(){
+      getData('/getData').then(res=>{
+        console.log(res);
+        if (res.skills) {
+          //找历史记录
+          //找历史记录
+          this.setState({
+            skills:res.skills,
+            dataSource: this.state.dataSource.cloneWithRows(res.skills)
+          })
+        }
+      })
+    }
+    delData=(item)=>{
         alert('警告', '要舍弃这项技能了吗', [
           { text: '否' },
           { text: '是', onPress: () => {
-            Toast.info('舍弃啦~', 3, null, false);
+            post('/delSkill/', {
+              pk: item.pk
+            }).then(res => {
+              console.log(res)
+              if (res.status === 1) {
+                Toast.info('技能舍弃了哦~', 3, null, false);
+                this.initData();
+              }
+            })
           }},
         ])
       }
@@ -65,7 +76,7 @@ class Skill extends Component {
                 right={[
                   {
                     text: '删除',
-                    onPress: () => {this.delData(rowData.guid)},
+                    onPress: () => {this.delData(rowData)},
                     style: { backgroundColor: '#F4333C', color: 'white' },
                   },
                 ]}
@@ -107,10 +118,7 @@ class Skill extends Component {
                         <Button type="primary" onClick={() => {
                             console.log(this.state);
                             let tmp=[...this.state.skills,{fields:{name:this.state.name,score:this.state.score}}]
-                            this.setState({
-                                skills:tmp,
-                                dataSource: this.state.dataSource.cloneWithRows(tmp)
-                            })
+                            
                             post('/addSkill/',{
                               name:this.state.name,
                               score:this.state.score
@@ -118,6 +126,7 @@ class Skill extends Component {
                               console.log(res)
                               if(res.status===1){
                                   Toast.info('添加成功', 3, null, false);
+                                  this.initData();
                               }
                           })
                         }}>增加</Button>

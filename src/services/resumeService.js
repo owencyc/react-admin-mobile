@@ -1,7 +1,7 @@
 import { ajaxApi }  from '../utils/request'
 
 const apiPath='http://www.pedalo.cn:8080/autumn';
-//const apiPath='http://localhost:51281/api/adapter';
+//const apiPath='http://localhost:8000/autumn';
 
 export const getData = (uri) =>ajaxApi(apiPath+uri,{method:"get"})
 

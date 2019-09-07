@@ -30,23 +30,35 @@ class Verse extends Component {
     }
     componentDidMount(){
         document.title="那些话儿";
-        getData('/getData').then(res=>{
-          console.log(res);
-          if (res.verses && res.verses.length > 0) {
-            //找历史记录
-            //找历史记录
-            this.setState({
-              verses:res.verses,
-              dataSource: this.state.dataSource.cloneWithRows(res.verses)
-            })
-          }
-        })
+        this.initData();
     }
-    delData=(guid)=>{
+    initData(){
+      getData('/getData').then(res=>{
+        console.log(res);
+        if (res.verses) {
+          //找历史记录
+          //找历史记录
+          this.setState({
+            verses:res.verses,
+            dataSource: this.state.dataSource.cloneWithRows(res.verses)
+          })
+        }
+      })
+    }
+    delData=(item)=>{
         alert('警告', '确认删除该金玉良言？', [
           { text: '否' },
-          { text: '是', onPress: () => {
-            Toast.info('删除成功了哦~', 3, null, false);
+          {
+            text: '是', onPress: () => {
+              post('/delVerse/', {
+                pk: item.pk
+              }).then(res => {
+                console.log(res)
+                if (res.status === 1) {
+                  Toast.info('删除成功了哦~', 3, null, false);
+                  this.initData();
+                }
+              })
           }},
         ])
       }
@@ -69,7 +81,7 @@ class Verse extends Component {
                 right={[
                   {
                     text: '删除',
-                    onPress: () => {this.delData(rowData.guid)},
+                    onPress: () => {this.delData(rowData)},
                     style: { backgroundColor: '#F4333C', color: 'white' },
                   },
                 ]}
@@ -112,10 +124,10 @@ class Verse extends Component {
                             console.log(this.state);
                             let tmp=[...this.state.verses,{fields:{author:this.state.author,content:this.state.content}}]
                             console.log(tmp)
-                            this.setState({
-                                verses:tmp,
-                                dataSource: this.state.dataSource.cloneWithRows(tmp)
-                            })
+                            // this.setState({
+                            //     verses:tmp,
+                            //     dataSource: this.state.dataSource.cloneWithRows(tmp)
+                            // })
                             post('/addVerse/',{
                               author:this.state.author,
                               content:this.state.content
@@ -123,6 +135,7 @@ class Verse extends Component {
                               console.log(res)
                               if(res.status===1){
                                   Toast.info('添加成功', 3, null, false);
+                                  this.initData();
                               }
                           })
                         }}>增加</Button>

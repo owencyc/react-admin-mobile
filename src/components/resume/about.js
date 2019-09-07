@@ -46,15 +46,7 @@ class About extends Component {
                     ref={el => this.txtName = el}
                 >你的名字</InputItem>
                 <WhiteSpace />
-                <InputItem
-                    type='text'
-                    placeholder=""
-                    clear
-                    value={this.state.talk}
-                    onChange={val => { this.setState({ talk: val }) }}
-                    ref={el => this.txtTalk = el}
-                >人生格言</InputItem>
-                <WhiteSpace />
+                
                 <InputItem
                     type='text'
                     placeholder=""
@@ -81,6 +73,18 @@ class About extends Component {
                     onChange={val => { this.setState({ street: val }) }}
                     ref={el => this.txtStreet = el}
                 >街道</InputItem>
+                <WhiteSpace />
+                <TextareaItem
+                        title="人生格言"
+                        placeholder="座右铭~"
+                        clear
+                        data-seed="logId"
+                        autoHeight
+                        rows={3}
+                        value={this.state.talk}
+                        onChange={val=>{this.setState({talk:val})}}
+                        ref={el =>  this.txtWords=el}
+                    />
                 <WhiteSpace />
 
                 <WingBlank>
